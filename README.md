@@ -1,26 +1,32 @@
-* 摘要
+# 简介
+本文内容包括：
+* Boost库列表
+* 分目（与官方分类有所差异）
+* Boost库简介
+* 助记提示
+* 比较相近、或有承继关系的库的异同
+* 少量示例
 
-本文的目的在于帮助大家梳理一下Boost中有哪些库，包括那些库是不再需要的，类似的库之间有什么共同点和不同点，以免胡造轮子。 Boost这些库就和鸡啄米一样散地到处都是……
+# 库列表
 
-* 库列表
+## 元编程
 
-** 元编程
+### 糊弄编译器
 
-*** 糊弄编译器
+#### Identity
 
-Identity
+### 类型萃取和修饰
 
-*** 类型萃取和修饰
-
-**** Type Traits
+#### Type Traits
 这个大家应该很熟悉了，通过它们可以判断类型的特性，比如是不是一个整数类型，是否有符号。它也可以为类型做一些修饰，比如变换到引用类型、常类型等。这个库C++11之后基本上就完全std中的type traits取代了。
 
 但是这个库对一些类型，如成员函数支持不足，也不能做一些更加精细的检查，比如探测类中是否存在某个成员，这时就需要下面几个库进行补充。
 
-Call Traits
+#### Call Traits
 
 这个库可以把一些不能作为函数参数的类型，如数组类型修饰成可以作为参数的类型，比如：
 
+```cpp
 template <class T>
 struct A {
    void foo(T t);
@@ -42,39 +48,44 @@ template <class T>
 void A<T>::foo(typename call_traits<T>::value_type t) {
    typename call_traits<T>::value_type dup(t); // OK even if T is an array type.
 }
+```
 
 实际上在使用中这个库并不常用，因为大部分情况下A<T>这种都会要求T是值语义的比较多，为啥非要用一个数组或者一个引用进去作死呢？
 
-Callable Traits
+#### Callable Traits
 
 这个库是1.66中的新加入库，可以为成员函数活、一般函数或者任意函数对象调整类型修饰，比如
 
+```cpp
 struct foo {};
 using pmf = void(foo::*)();
 using expect = void(foo::*)() const volatile;
 using test = ct::add_member_cv_t<pmf>;
 static_assert(std::is_same<test, expect>::value, ""); // True
+```
 
 C++11/14中的add_cv是没办法调整函数的类型修饰的。
 
-TTI
+### TTI
 
 这个库从1.54开始加入，也算是个比较新的库了。它算是对Type Traits的一个补充，一看几个头文件名就知道它是做什么的了：
 
+```cpp
 // ...
 #include <boost/has_member_data.hpp>
 #include <boost/has_member_function.hpp>
 // ...
+```
 
 不过从C++11开始，因为有了Expression SFINAE，以及decltype/declval之类的存在，它的应用场景就没有那么广泛了。
 
-自省
+### 自省
 
-Typeof
+#### Typeof
 
 获得变量的类型，并支持自动类型变量。C++11之前比GCC的typeof要好用，C++11/14以后它的用途已经可以完全被 decltype, decltype(auto) 和 auto 所取代。
 
-Type Index
+#### Type Index
 
 C++11开始，标准库中引入了type_index。所以接下来又到了做下面几个概念做近义词辨析的时候了：typeid, std::type_index 和 boost::type_index
 
@@ -82,21 +93,21 @@ C++11开始，标准库中引入了type_index。所以接下来又到了做下�
 
 不过typeid需要打开编译器的RTTI，而且它生成的名字也不太好（特别是函数和模板类型），所以Boost搞了一个自己的Type_index来解决这一些问题，算是是std::type_info的一个增强。
 
-类型检查与约束
+### 类型检查与约束
 
-Concept Check
+#### Concept Check
 
 这个库从1.19就加入了boost （1.19是2000年发布的 —— 这都TM快20年了），目的就是做Concept的检查，然而用处真的很小 —— 你检查了又能怎么样，出错信息还是巨难看，就和C++11之前的Static Assert一样。
 
 看，Concept是C++98时代的东西了，C++20都还进不来。这么难产的特性，要么没卵用，要么编译器难实现，要么程序员难用；依我看，Concept三个毛病都占齐了。
 
-Enable If
+#### Enable If
 
 Boost中要多一个disable_if，其余直接用 std::enable_if 即可。
 
-元编程数据结构与算法
+### 元编程数据结构与算法
 
-MPL
+#### MPL
 
 C++11之前用于元编程的库。提供了一系列的类型的容器、算法 (find， count， sort 等）以及辅助函数。它在类型系统上，提供了类STL的库以像变量那样操作类型。
 
@@ -109,53 +120,56 @@ BOOST_MPL_ASSERT(( is_same< at_c<types,3>::type, int > ));
 
 在C++11之后，应使用Boost 1.66新加入的MP11。
 
-MP11
+#### MP11
 
 C++11版的MPL。在C++11之后应该使用它，编译速度要快一些。
 
-运行时泛化
+### 运行时泛化
 
-Type Erasure
+#### Type Erasure
 
-宏元编程
+### 宏元编程
 
-Preprocessor (PP)
+#### Preprocessor (PP)
 
 MPL提供了一套模板的库运算，PP则提供了宏上的元编程库。它也提供了一些类似于容器的东西，比如List，Tuple等，容器中的元素就是标识符。
 
 感受一下它的用法：
 
+```cpp
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/list/for_each.hpp>
 
 #define LIST (w, (x, (y, (z, BOOST_PP_NIL))))
-
 #define MACRO(r, data, elem) BOOST_PP_CAT(elem, data)
 
 BOOST_PP_LIST_FOR_EACH(MACRO, _, LIST) // expands to w_ x_ y_ z_
+```
 
 这东西看起来非常异端，不过它对代码展开会很有帮助 —— 比如可以用它来控制把for循环展开若干层深度；或者生成若干个变量的名字。
 
 高级技能可以不学，不过 STRINGIZE，CONCAT，COMMA 要记住，以后总能用得上。
 
-VMD
+#### VMD
 
 VMD是对PP的一个扩充，提供了对PP中数据和数据结构的操作。比如把PP中的List转换成PP中的Tuple；判断一个输入是不是一个PP的列表；给PP提供了push back, pop back等操作函数。要想用它，你得先用得到PP。
 
-杂耍
+### 杂耍
 
-Hana
+#### Hana
 
 这个库需要C++14及以上的支持。这个库骨骼比较惊奇，基本思路是把类型变成值，经过运算后，再把值变成类型。文档自己也说了，它是MPL和Fusion的混合体。如果你是想实现类似于ducking type这样的特性，那是Hana好用许多。
 
 举个例子：
 
+```cpp
 boost::any a = 'x';
 std::string r = switch_(a)(
   case_<int>([](auto i) { return "int: "s + std::to_string(i); }),
   case_<char>([](auto c) { return "char: "s + std::string{c}; }),
   default_([] { return "unknown"s; })
 );
+```
 
 assert(r == "char: x"s);
 
@@ -581,10 +595,10 @@ Utility
 
 Uuid
 
-* 附录
+# 附录
 
-** 简介模板
+## 简介模板
 关键字，承继关系，语言特性，库依赖，描述（可能包括原理，实现，优缺点，使用建议）
 
-** 待更新列表
+## 待更新列表
 列表更新至 1.70.0，除了：Contract, HOF, YAP, Safe Numerics。
