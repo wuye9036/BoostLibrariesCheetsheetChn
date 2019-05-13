@@ -9,8 +9,8 @@
 
 # 库列表
 
-## 元编程
-
+## <details><summary> 元编程 </summary>
+<p>
 ### 糊弄编译器
 
 #### Identity
@@ -172,6 +172,9 @@ std::string r = switch_(a)(
 ```
 
 assert(r == "char: x"s);
+
+</p>
+</details>
 
 文件格式
 
@@ -595,10 +598,10 @@ Utility
 
 Uuid
 
-# 附录
+* 附录
 
-## 简介模板
+** 简介模板
 关键字，承继关系，语言特性，库依赖，描述（可能包括原理，实现，优缺点，使用建议）
 
-## 待更新列表
+** 待更新列表
 列表更新至 1.70.0，除了：Contract, HOF, YAP, Safe Numerics。
