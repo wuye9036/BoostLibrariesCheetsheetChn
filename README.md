@@ -10,9 +10,11 @@
 # 库列表
 
 ## 元编程
-<details><summary>Identity / Type Traits / Call Traits</summary>
+<details>
+<summary>语言补丁 / 类型萃取与修饰 / 自省 / 类型检查与约束 / 元编程数据结构与算法 / 运行时泛化 / 宏元编程 / 类型-值相容元编程</summary>
 <p>
-### 糊弄编译器
+
+### 语言“补丁”
 
 #### Identity
 
@@ -177,24 +179,25 @@ assert(r == "char: x"s);
 </p>
 </details>
 
-文件格式
+## 文件格式支持
 
-文本
+### 文本
 
-PropertyTree
+#### PropertyTree
 
 可以以树的结构来读写XML, JSON, INI和INFO文件。
 
-图像
+### 图像
 
-GIL
+#### GIL
 
 图像文件的读写库。这个库是Adobe贡献的。
 
 这个库把图像的读写抽象成了Image View和Pixel Iterator/Allocator，这样可以灵活处理像素格式。本身只支持Jpeg，Tiff和Png格式，不过可以挂接其它扩展。
-控制流
 
-Context
+## 协程与纤程
+
+#### Context
 
 自从有了Lambda之后，Boost心就野了，想支持现代语言普遍支持的并发机制Co-routine。Co-routine的基本思想就是让多个函数共享执行线程，而且可以主动打断自己的执行。对于C++来说，一个基本的实现方法就是到打断的时候，把整个栈（当然还有保存下来的寄存器状态）拷贝出去，然后跳转到其他要执行的函数上；然后要继续执行的时候，再把栈拷贝回来。
 
@@ -208,23 +211,15 @@ C++的栈和C相近，基本上直接就是机器和OS上直接支持的栈。�
 
 有了Context之后，更高层的库就容易实现多了（我不信）。
 
-Coroutine
+#### Coroutine / Coroutine2
 
-1.53 开始加入了Coroutine，这个对C++11不是强制要求的。
-
-Coroutine2
-
-1.55 加入了Coroutine2，并且 Coroutine 停止维护了。只要编译器支持C++11，就应该用后面这个库。
+1.53 开始加入了Coroutine，这个对C++11不是强制要求的。1.55 加入了Coroutine2，并且 Coroutine 停止维护了。只要编译器支持C++11，就应该用后面这个库。
 
 关于这个库其实就三板斧，push type，pull type，yield。但是这文档当年我看了大概快半天的时间，才画出了一个葫芦。这里有个例子：
-https://theboostcpplibraries.com/boost.coroutine​
-theboostcpplibraries.com
 
-Chapter 51. Boost.Coroutine
-Chapter 51. Boost.Coroutine​
-theboostcpplibraries.com
+(待更新)
 
-Fiber
+#### Fiber
 
 Fiber和Co-routine在概念上非常相近，API也比较类似。它们都有调用方主动将自己切换出去的过程；并且在Boost上，都是由Context库实现状态保存和切换的。
 
@@ -232,56 +227,58 @@ Fiber和Co-routine在概念上非常相近，API也比较类似。它们都有�
 http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4024.pdf​
 www.open-std.org
 
-Scope Exit
+#### Scope Exit
 
+## 数据流
 
-数据流
+#### Iostreams
 
-Iostreams
+#### Iterator
 
-Iterator
+#### Range
 
-Range
-网络
+## 网络
 
-Beast
+#### ASIO
+
+#### Beast
 
 Http协议的基础库，可以用于开发Http协议的客户端和服务器端。
 Socket部分是用ASIO实现。
 
-ASIO
-容器与数据结构
+## 容器与数据结构
 
-单数据存储
+### 单数据存储
 
-Any
+#### Any
 
-Variant
+#### Variant
 
-静态长度结构
+### 静态长度结构
 
-Array
+#### Array
 
-Multi-Array
+#### Multi-Array
 
-类C++98 STL容器
+### 容器与数据结构
 
-Intrusive
+#### Intrusive
 
-Container
+#### Container
 
-Pointer Container
+#### Pointer Container
 
-Poly Collection
+#### Poly Collection
 
-Tuple
+#### Tuple
 
-Unordered
+#### Unordered
 
-Fusion
+#### Fusion
 
 Fusion类似于STL中的容器、迭代器和算法，只不过它可以工作在 Boost.Tuple和Fusion Map之上。看下面的例子：
 
+```cpp
 // 一个 “vector”（实际上就是tuple），有两个元素一个int一个float
 vector<int, float> v(12, 5.5f);
 std::cout << at_c<0>(v) << std::endl;
@@ -292,54 +289,57 @@ typedef map<pair<int, char>, pair<double, std::string>> map_type;
 map_type m(make_pair<int>('X'), make_pair<double>("Men"));
 std::cout << at_key<int>(m) << std::endl;
 std::cout << at_key<double>(m) << std::endl;
+```
 
 它提供了和 struct 和 std::tuple 相兼容的视图，同时还能做类似于joint和zip之类的操作。
 
+#### Compressed Pair
 
-非 C++98 STL的数据结构
+#### Heap
 
-Compressed Pair
+#### ICL
 
-Heap
+#### Property Map
 
-ICL
+#### Bimap
 
-Property Map
+#### Circular Buffer
 
-Bimap
+#### Dynamic Bitset
 
-Circular Buffer
+#### Lockfree
 
-Dynamic Bitset
+#### Multi-Index
 
-Lockfree
+#### Graph
 
-Multi-Index
-函数与高阶函数
+#### GraphParallel
 
-C++14上没用的
+## 函数式编程
 
-Bind
+### C++14上没用的
 
-Function
+#### Bind
 
-Function Types
+#### Function
 
-Lambda
+#### Function Types
 
-Local Function
+#### Lambda
 
-Member Function
+#### Local Function
 
-Functional
+#### Member Function
 
-Functional Forward
+#### Functional
+
+#### Functional Forward
 
 上面这些库，一些是用来生成匿名函数的，比如bind，lambda和local function，这些用C++11的lambda就能搞定，但是C++11之前就得各种奇技淫巧；还有一些是用于保存不同来源的函数对象的，比如function，member function之类，这些基本上就是C++11的function搞定。最后一个Functional Forward，就是瘸腿版的C++11 perfect forward。
 
-C++14上还有用的
+### C++14上还有用的
 
-Functional/Overloaded functions
+#### Functional/Overloaded functions
 
 这个东西用于把多个签名的函数打包到一个名字中。看例子就一目了然了：
 
@@ -356,205 +356,205 @@ BOOST_TEST(identity(1.23) == 1.23);
 
 但是说老实话，函数重载到底要调用谁难道自己写的时候心理还没有点逼数吗。。。
 
-Phoenix
-平台、硬件、操作系统服务
+#### Phoenix
 
-系统配置
+## 平台、硬件、操作系统服务
 
-Config
+### 系统配置
 
-Predef
+#### Config
 
-Compatibility
+#### Predef
 
-时间
+#### Compatibility
 
-Chrono
+### 日期与时间
 
-Date Time
+#### Chrono
 
-Timer
+#### Date Time
 
-硬件特性
+#### Timer
 
-Align
+### 硬件特性相关
 
-Atomic
+#### Align
 
-Compute
+#### Atomic
 
-Endian
+#### Compute
 
-操作系统服务
+#### Endian
 
-System
+### 操作系统服务
 
-Filesystem
+#### System
 
-DLL
+#### Filesystem
 
-Thread
+#### DLL
 
-Process
+#### Thread
 
-Interprocess
+#### Process
 
-日志
+#### Interprocess
 
-Log
-数学、数值与物理
+## 日志
 
-基本数值
+#### Log
 
-Math/Common Factor
+## 数学、数值与物理
 
-Integer
+### 数值表示、存储与运算
 
-Multiprecision
+#### Math/Common Factor
 
-Numeric Conversion
+#### Integer
 
-Rational
+#### Multiprecision
 
-QVM
+#### Numeric Conversion
 
-Math / Octonion
+#### Rational
 
-Math / Quaternion
+#### QVM
 
-Interval
+#### Math.Octonion
 
-线性代数
+#### Math.Quaternion
 
-uBlas
+#### Interval
 
-Odeint
+### 线性代数
 
-函数求值
+#### uBlas
 
-Math/Special Functions
+#### Odeint
 
-几何
+### 常用函数（特殊函数）
 
-Geometry
+### Math.SpecialFunctions
 
-Polygon
+### 几何
 
-离散
+#### Geometry
 
-CRC
+#### Polygon
 
-Functional/Hash
+### 散列与密码学
 
-Sort
+#### CRC
+
+#### Functional/Hash
+
+#### Uuid
+
+### 算法
+
+#### Sort
 
 标准库里面的sort是基于比较排序的，这个库搞了点trick比如基数排序什么的，和标准库中的sort比，它对整数、字符串和浮点都提供了更快的排序实现。
 
-Graph
+### 随机、概率与统计
 
-GraphParallel
+#### Random
 
-随机、概率与统计
+#### Min-max
 
-Random
+#### Accumulator
 
-Min-max
+#### Statistical Distributions
 
-Accumulator
+### 单位换算
 
-Statistical Distributions
+#### Units
 
-单位换算
+#### Ratio
 
-Units
+## 文本分析与处理
 
-Ratio
-文本分析与处理
+### 字符串-值转换
 
-字符串与值的转换
+#### Convert
 
-Convert
+#### Format
 
-Format
+#### Lexical Cast
 
-Lexical Cast
+### 本地化/字符集转换
 
-本地化
+#### Locale
 
-Locale
+### 通用字符串算法
 
-一般字符串处理算法
+#### String Algo
 
-String Algo
+### 正则表达式
 
-正则
+#### Xpressive
 
-Xpressive
-
-Regex
+#### Regex
 
 Boost中一共两套Regular Expression的实现，一个是Xpressive，一个是Regex。前者的特点是，有一套方言能够在编译期给整一个DFA出来（当然也能在运行时compile出来，不过这个就没特色了）；而后者则只能在运行时整了。
 
 下面是个整个编译期DFA的例子。
 
+``` cpp
 sregex re = '$' >> +_d >> '.' >> _d >> _d;
-// 这货等价于： $+\d.\d\d
+// 等价于： $+\d.\d\d
+```
 
-这TM看着就是Spirit的文法啊。
+这TM看着就是Spirit的文法啊。按照上古时代的性能评测，Xpressive要快很多。在大部分情况下，Regex就够用了，而且这个库在C++11时代也成为了标准库的一部分，不需要用到Boost中的实现了。
 
-按照上古时代的性能评测，Xpressive要快很多。
+### 文法分析
 
-不过大部分情况下，Regex就够用了，而且这个库在C++11时代也成为了标准库的一部分，不需要用到Boost中的实现了。
+#### Spirit
 
-文法分析
+### 特定语言语法分析器
 
-Spirit
-
-特定语法分析器
-
-Wave
+#### Wave
 
 这个库提供了C++中预处理器（Preprocessor）的实现。如果用户在开发一个新的语言编译器/解释器，并且想让这个语言拥有等同于C++11预处理器的功能（包括include，条件编译，宏替换），就可以直接使用这个库。
 语法糖与语言扩展
 
-语法糖
+### 语法糖
 
-Assign
+#### Assign
 
-Foreach
+#### Foreach
 
-Operators
+#### Operators
 
-Optional
+#### Optional
 
-Parameter
+#### Parameter
 
-Ref
+#### Ref
 
-Swap
+#### Swap
 
-Tribool
+#### Tribool
 
-方言
+### C++内方言
 
-Metaparse
+#### Metaparse
 
-Proto
-设计模式与习惯用法
+#### Proto
 
-教做人
+## 设计模式与习惯用法
+
+### 教做人
 
 Value Initialized
 
-惯用法
+### 惯用法
 
 Serialization
 
-Signals（废弃）
+Signals / Signal2
 
-Signals2
-
-GoF设计模式
+### GoF设计模式
 
 Flyweight
 
@@ -567,42 +567,53 @@ Mate State Machine
 Statechart
 
 Pool
-调试、测试与诊断
 
-Assert
+## 调试、测试与诊断
 
-Static Assert
+#### Assert
 
-Stacktrace
+#### Static Assert
 
-ThrowException
+#### Stacktrace
 
-Test
+#### ThrowException
 
-Conversion
+#### Test
 
-Core
 
-Exception
 
-IO State Savers
+## 未分类
 
-Move
+更新至1.70
 
-Program Options
+#### Utility
 
-Python
+#### Conversion
 
-Smart Ptr
+#### Core
 
-Utility
+#### Exception
 
-Uuid
+#### IO State Savers
 
-* 附录
+#### Move
 
-** 简介模板
+#### Program Options
+
+#### Python
+
+#### Smart Ptr
+
+#### Contract
+
+#### HOF
+
+#### YAP
+
+#### Safe Numerics
+
+# 附录
+
+## 简介模板
 关键字，承继关系，语言特性，库依赖，描述（可能包括原理，实现，优缺点，使用建议）
 
-** 待更新列表
-列表更新至 1.70.0，除了：Contract, HOF, YAP, Safe Numerics。
